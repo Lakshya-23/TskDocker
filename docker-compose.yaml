@@ -15,7 +15,7 @@ services:
     build:
       context: ./client
       args:
-        VITE_API_URL: http://backend:5000/api
+        VITE_API_URL: https://miniature-invention-vx9gj4g6wp4cp7vj-5000.app.github.dev
     container_name: frontend
     restart: always
     ports:
