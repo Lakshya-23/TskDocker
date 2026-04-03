@@ -4,7 +4,9 @@ Dockerfile
 .dockerignore
 .git
 .gitignore
-.env
+
+#commented this for local deployment so that docker can automatically read .env file
+#.env
 .env.local
 coverage
 dist

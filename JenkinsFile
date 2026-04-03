@@ -1,0 +1,59 @@
+pipeline{
+    agent any
+
+    environment {
+        FRONTEND_IMAGE: "mern-frontend:jenkins"
+        BACKEND_IMAGE: "mern-backend:jenkins"
+        MONGO_URI: "mongodb://mongo:27017/taskdb"
+        PORT: 5000
+    }
+    stages {
+        stage('checkout code'){
+            steps {
+                git url:'https://github.com/Lakshya-23/TskDocker',branch:'main'
+            }
+        }
+        stage('prepare .env'){
+            steps{
+                sh ''' 
+                mkdir -p server
+                cat > server/.env <<EOF
+                PORT = $PORT
+                MONGO_URI=$MOGO_URI
+                EOF
+                '''
+            }
+        }
+        stage('Build Docker Images'){
+            steps{
+                sh '''
+                    echo "Building backend Image
+                    docker build -t $BACKEND_IMAGE ./server
+
+                    echo "Building frontend Image
+                    docker build -t $FRONTEND_IMAGE ./client --build-args VITE_API_URL:http://localhost:5000
+                '''
+            }
+        }
+        stage('Run with docker compose'){
+            steps{
+                sh ''' 
+                echo 'Starting Mern App'
+                docker compose up -d
+
+                echo 
+                echo "Listing all contianers"
+                docker ps
+
+                echo '===backend log==='
+                docker logs backend || true
+
+                echo '===frontend log==='
+                docker logs frontend || true
+                '''
+            }
+        }
+
+    }
+
+}

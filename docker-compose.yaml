@@ -1,24 +1,53 @@
+volumes: 
+  mongo-data:
 
-
+networks:
+  mern-net:
+    driver: bridge
 
 services:
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mern-net
+      
+       
   backend:
-    build: ./server
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
     container_name: backend
-    restart : always
+    restart : unless-stopped
     env_file: 
       - ./server/.env
     ports:
       - "5000:5000"
+    depends_on:
+      - mongo
+    networks:
+      - mern-net
 
   frontend:
     build:
       context: ./client
+      dockerfile: Dockerfile
+
+      #goes to Dockerfile of client
       args:
-        VITE_API_URL: https://miniature-invention-vx9gj4g6wp4cp7vj-5000.app.github.dev
+        # VITE_API_URL: https://miniature-invention-vx9gj4g6wp4cp7vj-5000.app.github.dev
+        #VITE_API_URL: http://backend:5000/api
+        VITE_API_URL: http://localhost:5000
     container_name: frontend
-    restart: always
+    restart: unless-stopped
     ports:
       - "5173:5173"
     depends_on:
       - backend
+    networks:
+      - mern-net
+
