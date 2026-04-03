@@ -18,9 +18,8 @@ services:
       
        
   backend:
-    build: 
-      context: ./server
-      dockerfile: Dockerfile
+  # Variable Substitution with Defaults.
+    image: ${BACKEND_IMAGE:-mern-backend:local}
     container_name: backend
     restart : unless-stopped
     env_file: 
@@ -33,15 +32,8 @@ services:
       - mern-net
 
   frontend:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-
-      #goes to Dockerfile of client
-      args:
-        # VITE_API_URL: https://miniature-invention-vx9gj4g6wp4cp7vj-5000.app.github.dev
-        #VITE_API_URL: http://backend:5000/api
-        VITE_API_URL: http://localhost:5000
+  #Variable Substitution with Defaults.
+    image: ${FRONTEND_IMAGE:-mern-frontend:local}
     container_name: frontend
     restart: unless-stopped
     ports:

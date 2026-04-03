@@ -27,11 +27,12 @@ pipeline{
         stage('Build Docker Images'){
             steps{
                 sh '''
+                # Added --load to save the image
                     echo "Building backend Image"
-                    docker build -t $BACKEND_IMAGE ./server
+                    docker build --load -t $BACKEND_IMAGE ./server
 
                     echo "Building frontend Image"
-                    docker build -t $FRONTEND_IMAGE ./client --build-arg VITE_API_URL:http://localhost:5000
+                    docker build --load -t $FRONTEND_IMAGE ./client --build-arg VITE_API_URL=http://localhost:5000
                 '''
             }
         }
