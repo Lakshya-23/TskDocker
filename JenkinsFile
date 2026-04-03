@@ -19,7 +19,7 @@ pipeline{
                 mkdir -p server
                 cat > server/.env <<EOF
                 PORT = $PORT
-                MONGO_URI=$MOGO_URI
+                MONGO_URI=$MONGO_URI
                 EOF
                 '''
             }
@@ -27,11 +27,11 @@ pipeline{
         stage('Build Docker Images'){
             steps{
                 sh '''
-                    echo "Building backend Image
+                    echo "Building backend Image"
                     docker build -t $BACKEND_IMAGE ./server
 
                     echo "Building frontend Image
-                    docker build -t $FRONTEND_IMAGE ./client --build-args VITE_API_URL:http://localhost:5000
+                    docker build -t $FRONTEND_IMAGE ./client --build-arg VITE_API_URL:http://localhost:5000
                 '''
             }
         }
